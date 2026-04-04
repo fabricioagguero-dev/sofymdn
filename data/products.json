@@ -1,5 +1,22 @@
 [
   {
+    "id": "prod_1775331052472_0pyq",
+    "nombre": "remera epica",
+    "tela": "Lycra",
+    "talle": "S",
+    "precio": 8000,
+    "descripcion": "la mejor",
+    "tipo": "otro",
+    "imagenes": [
+      "https://api.telegram.org/file/bot8764216342:AAEIsS4gqL5yeEf4YBGSBqdNL14FTpVK8sk/photos/file_2.jpg"
+    ],
+    "colores": [
+      "Negro"
+    ],
+    "activo": true,
+    "fechaAgregado": "2026-04-04T19:30:52.472Z"
+  },
+  {
     "id": "prod_1775328457920_dd66",
     "nombre": "ejemplo",
     "tela": "Polar",
