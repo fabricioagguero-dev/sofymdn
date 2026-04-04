@@ -6,10 +6,20 @@
   for = "/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Headers = "Content-Type, X-Telegram-Bot-Api-Secret-Token"
+    Access-Control-Allow-Headers = "Content-Type"
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/telegram"
+  to = "/.netlify/functions/telegram"
+  status = 200
+
+[[redirects]]
+  from = "/api/comprobante"
+  to = "/.netlify/functions/comprobantes"
+  status = 200
+
+[[redirects]]
+  from = "/api/products"
+  to = "/.netlify/functions/products"
   status = 200

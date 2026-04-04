@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pagar — Sofy MDN</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── Variables ── */
+    :root {
+      --black:      #0a0a0a;
+      --black-soft: #141414;
+      --black-card: #1a1a1a;
+      --pink:       #f472b6;
+      --pink-dark:  #db2777;
+      --white:      #fafafa;
+      --gray:       rgba(250,250,250,0.5);
+      --gray-dim:   rgba(250,250,250,0.1);
+      --font-d:     'Playfair Display', serif;
+      --font-b:     'DM Sans', sans-serif;
+      --radius:     16px;
+      --tr:         0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-b);
+      font-weight: 300;
+      min-height: 100vh;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ── */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid rgba(244,114,182,0.1);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(20px);
+    }
+    .nav-logo {
+      font-family: var(--font-d);
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+    .nav-logo span { color: var(--pink); }
+    .nav-back {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray);
+      transition: color var(--tr);
+    }
+    .nav-back:hover { color: var(--pink); }
+
+    /* ── LAYOUT ── */
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    /* ── STEPS ── */
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 3rem;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      position: relative;
+    }
+    .step-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid rgba(244,114,182,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--gray);
+      transition: all var(--tr);
+    }
+    .step.active .step-num {
+      background: var(--pink);
+      border-color: var(--pink);
+      color: var(--black);
+    }
+    .step.done .step-num {
+      background: rgba(244,114,182,0.2);
+      border-color: var(--pink);
+      color: var(--pink);
+    }
+    .step-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+    .step.active .step-label { color: var(--pink); }
+    .step-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(244,114,182,0.2);
+      min-width: 40px;
+      margin-bottom: 1.4rem;
+    }
+
+    /* ── PANELS ── */
+    .panel {
+      display: none;
+      animation: fadeUp 0.5s both;
+    }
+    .panel.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── PANEL HEADER ── */
+    .panel-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 0.5rem;
+    }
+    .panel-title {
+      font-family: var(--font-d);
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .panel-sub {
+      color: var(--gray);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    /* ── RESUMEN DEL PEDIDO ── */
+    .order-summary {
+      background: var(--black-card);
+      border: 1px solid rgba(244,114,182,0.1);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .order-summary h3 {
+      font-family: var(--font-d);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: var(--gray);
+      font-weight: 400;
+    }
+    .order-items { display: flex; flex-direction: column; gap: 0.75rem; }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+    .order-item-name { color: var(--white); }
+    .order-item-meta { color: var(--gray); font-size: 0.8rem; }
+    .order-item-price { color: var(--pink); font-weight: 500; }
+    .order-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.05);
+      margin: 1rem 0;
+    }
+    .order-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.1rem;
+    }
+    .order-total-label { font-weight: 400; }
+    .order-total-amount {
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--pink);
+    }
+
+    /* ── TÉRMINOS Y CONDICIONES ── */
+    .terms-box {
+      background: rgba(244,114,182,0.05);
+      border: 1px solid rgba(244,114,182,0.2);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .terms-box h3 {
+      font-family: var(--font-d);
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: var(--pink);
+    }
+    .terms-item {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+    .terms-icon { color: var(--pink); flex-shrink: 0; margin-top: 2px; }
+
+    .seña-highlight {
+      background: rgba(244,114,182,0.1);
+      border-left: 3px solid var(--pink);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1rem 0;
+    }
+    .seña-title {
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+    .seña-detail { font-size: 0.85rem; color: var(--gray); line-height: 1.5; }
+    .seña-amount { color: var(--pink); font-weight: 500; }
+
+    /* ── CHECKBOX ── */
+    .checkbox-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+    .checkbox-label input[type="checkbox"] {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      accent-color: var(--pink);
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    /* ── BOTONES DE PAGO ── */
+    .pay-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 1.1rem;
+      border-radius: 100px;
+      font-family: var(--font-b);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all var(--tr);
+      margin-bottom: 1rem;
+      text-decoration: none;
+    }
+    .pay-btn-mp {
+      background: #009ee3;
+      color: #fff;
+    }
+    .pay-btn-mp:hover { background: #007ec0; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,158,227,0.3); }
+    .pay-btn-mp:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .pay-note {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-top: 0.5rem;
+    }
+
+    /* ── FORMULARIO ── */
+    .form-section {
+      margin-bottom: 2rem;
+    }
+    .form-section-title {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(244,114,182,0.15);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .form-grid.single { grid-template-columns: 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    textarea {
+      background: var(--black-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      color: var(--white);
+      font-family: var(--font-b);
+      font-size: 0.9rem;
+      font-weight: 300;
+      transition: border-color var(--tr);
+      outline: none;
+      width: 100%;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(244,114,182,0.1);
+    }
+    input.error, textarea.error {
+      border-color: #ef4444;
+    }
+    .field-error {
+      font-size: 0.75rem;
+      color: #ef4444;
+      display: none;
+    }
+    .field-error.visible { display: block; }
+
+    textarea { resize: none; min-height: 80px; }
+
+    /* Upload de comprobante */
+    .upload-zone {
+      border: 2px dashed rgba(244,114,182,0.3);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--tr);
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--pink);
+      background: rgba(244,114,182,0.05);
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+    }
+    .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .upload-text { color: var(--gray); font-size: 0.85rem; line-height: 1.6; }
+    .upload-text strong { color: var(--pink); }
+
+    .preview-img {
+      display: none;
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    .preview-img.visible { display: block; }
+
+    /* ── SUBMIT BTN ── */
+    .submit-btn {
+      width: 100%;
+      padding: 1.1rem;
+      background: var(--pink);
+      border: none;
+      border-radius: 100px;
+      color: var(--black);
+      font-family: var(--font-b);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--tr);
+      margin-top: 1rem;
+    }
+    .submit-btn:hover { background: var(--white); transform: translateY(-2px); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; background: var(--pink); }
+
+    /* ── SUCCESS ── */
+    .success-panel {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+    .success-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .success-title {
+      font-family: var(--font-d);
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .success-sub { color: var(--gray); line-height: 1.7; margin-bottom: 2rem; }
+    .success-id {
+      background: var(--black-card);
+      border: 1px solid rgba(244,114,182,0.2);
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.85rem;
+      color: var(--gray);
+      margin-bottom: 2rem;
+      display: inline-block;
+    }
+    .success-id span { color: var(--pink); font-weight: 500; }
+
+    .back-home {
+      display: inline-block;
+      padding: 0.9rem 2.5rem;
+      border: 1px solid rgba(244,114,182,0.4);
+      border-radius: 100px;
+      color: var(--pink);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all var(--tr);
+    }
+    .back-home:hover { background: var(--pink); color: var(--black); }
+
+    /* ── SPINNER ── */
+    .spinner-inline {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(0,0,0,0.3);
+      border-top-color: var(--black);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #ef4444;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      z-index: 9999;
+      transition: transform 0.4s;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.success { background: #22c55e; }
+
+    @media (max-width: 600px) {
+      .nav { padding: 1rem; }
+      .page { padding: 2rem 1rem 4rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .panel-title { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">SOFY <span>MDN</span></a>
+    <a href="/" class="nav-back">← Volver a la tienda</a>
+  </nav>
+
+  <div class="page">
+
+    <!-- ── PASOS ── -->
+    <div class="steps" id="stepsBar">
+      <div class="step active" id="step1">
+        <div class="step-num">1</div>
+        <div class="step-label">Tu pedido</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" id="step2">
+        <div class="step-num">2</div>
+        <div class="step-label">Pago</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" id="step3">
+        <div class="step-num">3</div>
+        <div class="step-label">Confirmación</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         PANEL 1 — RESUMEN Y TÉRMINOS
+    ══════════════════════════════════════ -->
+    <div class="panel active" id="panel1">
+
+      <p class="panel-eyebrow">Tu pedido</p>
+      <h1 class="panel-title">Revisá antes de pagar</h1>
+      <p class="panel-sub">Confirmá tu pedido y aceptá los términos para continuar al pago.</p>
+
+      <!-- Resumen del carrito -->
+      <div class="order-summary">
+        <h3>📦 Resumen del pedido</h3>
+        <div class="order-items" id="orderItems">
+          <p style="color:var(--gray);font-size:.9rem">Cargando carrito...</p>
+        </div>
+        <div class="order-divider"></div>
+        <div class="order-total">
+          <span class="order-total-label">Total</span>
+          <span class="order-total-amount" id="orderTotal">$0</span>
+        </div>
+      </div>
+
+      <!-- Términos y condiciones -->
+      <div class="terms-box">
+        <h3>📋 Términos y Condiciones</h3>
+
+        <div class="seña-highlight">
+          <div class="seña-title">💳 Sistema de pago en dos partes</div>
+          <div class="seña-detail">
+            Al confirmar tu pedido, el pago se divide en dos:
+            <br><br>
+            <strong>1️⃣ Seña del 50%</strong> → Se abona <em>ahora</em> para confirmar el pedido y cubrir los costos de envío.<br>
+            <span class="seña-amount">Monto de la seña: <span id="señaAmount">$0</span></span>
+            <br><br>
+            <strong>2️⃣ Saldo restante 50%</strong> → Se abona al momento de la entrega o envío final.<br>
+            <span class="seña-amount">Monto restante: <span id="saldoAmount">$0</span></span>
+          </div>
+        </div>
+
+        <div class="terms-item">
+          <span class="terms-icon">📦</span>
+          <span>El pedido se confirma una vez recibida y verificada la seña del 50%.</span>
+        </div>
+        <div class="terms-item">
+          <span class="terms-icon">🚚</span>
+          <span>El envío se coordina por WhatsApp luego de confirmar el pago de la seña.</span>
+        </div>
+        <div class="terms-item">
+          <span class="terms-icon">📸</span>
+          <span>Debés subir el comprobante de transferencia en el siguiente paso.</span>
+        </div>
+        <div class="terms-item">
+          <span class="terms-icon">🔄</span>
+          <span>No se realizan cambios ni devoluciones una vez confirmado y enviado el pedido.</span>
+        </div>
+        <div class="terms-item">
+          <span class="terms-icon">⏰</span>
+          <span>Si no se recibe la seña dentro de las 24hs, el pedido se cancela automáticamente.</span>
+        </div>
+      </div>
+
+      <!-- Aceptar términos -->
+      <label class="checkbox-label" style="margin-bottom:2rem">
+        <input type="checkbox" id="acceptTerms" onchange="checkTerms()"/>
+        Leí y acepto los términos y condiciones del sistema de pago en dos partes.
+      </label>
+
+      <button class="pay-btn pay-btn-mp" id="btnContinuarPago" onclick="goToStep2()" disabled>
+        Continuar al pago →
+      </button>
+      <p class="pay-note">Solo aceptamos transferencia bancaria o Mercado Pago</p>
+
+    </div>
+
+    <!-- ══════════════════════════════════════
+         PANEL 2 — PAGO Y FORMULARIO
+    ══════════════════════════════════════ -->
+    <div class="panel" id="panel2">
+
+      <p class="panel-eyebrow">Paso 2 de 3</p>
+      <h1 class="panel-title">Realizá el pago</h1>
+      <p class="panel-sub">
+        Transferí la seña (<strong id="señaLabel2" style="color:var(--pink)">$0</strong>) y luego completá el formulario con tu comprobante.
+      </p>
+
+      <!-- Botón de Mercado Pago -->
+      <a href="https://link.mercadopago.com.ar/sofymdn" target="_blank" class="pay-btn pay-btn-mp" id="btnMP">
+        <svg width="22" height="22" viewBox="0 0 50 50" fill="white"><path d="M25 2C12.3 2 2 12.3 2 25s10.3 23 23 23 23-10.3 23-23S37.7 2 25 2zm0 4c10.5 0 19 8.5 19 19 0 10.5-8.5 19-19 19-10.5 0-19-8.5-19-19C6 14.5 14.5 6 25 6z"/><path d="M14 22h4v10h-4zm9-4h4v14h-4zm9 7h4v7h-4z" fill="white"/></svg>
+        Pagar con Mercado Pago
+      </a>
+      <p class="pay-note" style="margin-bottom:2rem">
+        🔒 Pago seguro procesado por Mercado Pago. Ingresás el monto vos mismo.
+      </p>
+
+      <!-- Separador -->
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.07)"></div>
+        <span style="color:var(--gray);font-size:.8rem">LUEGO DE PAGAR</span>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.07)"></div>
+      </div>
+
+      <!-- Formulario -->
+      <form id="checkoutForm" onsubmit="submitForm(event)">
+
+        <!-- Datos personales -->
+        <div class="form-section">
+          <div class="form-section-title">👤 Tus datos</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="nombre">Nombre *</label>
+              <input type="text" id="nombre" placeholder="Tu nombre" required maxlength="50"/>
+              <span class="field-error" id="err-nombre">Ingresá tu nombre</span>
+            </div>
+            <div class="form-group">
+              <label for="apellido">Apellido *</label>
+              <input type="text" id="apellido" placeholder="Tu apellido" required maxlength="50"/>
+              <span class="field-error" id="err-apellido">Ingresá tu apellido</span>
+            </div>
+            <div class="form-group full">
+              <label for="dni">DNI *</label>
+              <input type="text" id="dni" placeholder="Ej: 12345678" required maxlength="10"/>
+              <span class="field-error" id="err-dni">DNI inválido (7 u 8 dígitos)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Datos del pago -->
+        <div class="form-section">
+          <div class="form-section-title">💳 Datos de la transferencia</div>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="nombreTransferencia">Nombre a nombre de quien fue la transferencia *</label>
+              <input type="text" id="nombreTransferencia" placeholder="Como aparece en el comprobante" required maxlength="100"/>
+              <span class="field-error" id="err-nombreTransferencia">Campo requerido</span>
+            </div>
+            <div class="form-group full">
+              <label for="montoInput">Monto abonado *</label>
+              <input type="number" id="montoInput" placeholder="Ingresá el monto transferido" required min="1"/>
+              <span class="field-error" id="err-monto">Ingresá un monto válido</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comprobante -->
+        <div class="form-section">
+          <div class="form-section-title">📸 Comprobante de pago</div>
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="comprobanteFile" accept="image/*,.pdf" onchange="handleFileSelect(this)"/>
+            <div class="upload-icon">📎</div>
+            <div class="upload-text">
+              <strong>Hacé clic o arrastrá tu comprobante aquí</strong><br>
+              Foto de pantalla, imagen o PDF · Máx 5MB
+            </div>
+          </div>
+          <img class="preview-img" id="previewImg" alt="Comprobante"/>
+          <span class="field-error" id="err-comprobante">Adjuntá el comprobante de pago</span>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          Enviar comprobante y confirmar pedido
+        </button>
+
+      </form>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         PANEL 3 — ÉXITO
+    ══════════════════════════════════════ -->
+    <div class="panel" id="panel3">
+      <div class="success-panel">
+        <div class="success-icon">🎉</div>
+        <h2 class="success-title">¡Pedido confirmado!</h2>
+        <p class="success-sub">
+          Recibimos tu comprobante y datos correctamente.<br>
+          Sofy se pondrá en contacto con vos pronto para coordinar el envío y el pago del saldo restante.
+        </p>
+        <div class="success-id">
+          Número de pedido: <span id="successPedidoId">—</span>
+        </div>
+        <br>
+        <a href="/" class="back-home">← Seguir comprando</a>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+
+  <!-- Toast de notificación -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ══════════════════════════════════════════
+    // ESTADO GLOBAL
+    // ══════════════════════════════════════════
+
+    /** Carrito leído del localStorage */
+    let cart = [];
+
+    /** Archivo de comprobante seleccionado */
+    let comprobanteBase64 = null;
+
+    /** Step actual (1, 2, 3) */
+    let currentStep = 1;
+
+    // ══════════════════════════════════════════
+    // INICIALIZACIÓN
+    // ══════════════════════════════════════════
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Cargar carrito desde localStorage
+      try {
+        cart = JSON.parse(localStorage.getItem("sofymdn_cart") || "[]");
+      } catch {
+        cart = [];
+      }
+
+      // Si el carrito está vacío, redirigir a la tienda
+      if (!cart.length) {
+        showToast("Tu carrito está vacío. Redirigiendo...", "error");
+        setTimeout(() => { window.location.href = "/"; }, 2000);
+        return;
+      }
+
+      renderOrderSummary();
+    });
+
+    // ══════════════════════════════════════════
+    // RENDERIZAR RESUMEN DEL PEDIDO
+    // ══════════════════════════════════════════
+
+    function renderOrderSummary() {
+      const container = document.getElementById("orderItems");
+      const total     = cart.reduce((a, i) => a + (Number(i.precio) * i.qty), 0);
+      const seña      = Math.ceil(total / 2);
+      const saldo     = total - seña;
+
+      // Render items
+      container.innerHTML = cart.map(item => `
+        <div class="order-item">
+          <div>
+            <div class="order-item-name">${item.nombre}</div>
+            <div class="order-item-meta">Talle ${item.talle} · ${item.tela} × ${item.qty}</div>
+          </div>
+          <div class="order-item-price">$${(Number(item.precio) * item.qty).toLocaleString("es-AR")}</div>
+        </div>
+      `).join("");
+
+      // Totales
+      document.getElementById("orderTotal").textContent  = `$${total.toLocaleString("es-AR")}`;
+      document.getElementById("señaAmount").textContent  = `$${seña.toLocaleString("es-AR")}`;
+      document.getElementById("saldoAmount").textContent = `$${saldo.toLocaleString("es-AR")}`;
+      document.getElementById("señaLabel2").textContent  = `$${seña.toLocaleString("es-AR")}`;
+
+      // Pre-llenar el monto en el formulario
+      document.getElementById("montoInput").value = seña;
+    }
+
+    // ══════════════════════════════════════════
+    // NAVEGACIÓN ENTRE PASOS
+    // ══════════════════════════════════════════
+
+    /** Habilita/deshabilita el botón según el checkbox de términos */
+    function checkTerms() {
+      const accepted = document.getElementById("acceptTerms").checked;
+      document.getElementById("btnContinuarPago").disabled = !accepted;
+    }
+
+    /** Avanza al paso 2 (pago) */
+    function goToStep2() {
+      if (!document.getElementById("acceptTerms").checked) return;
+      setStep(2);
+    }
+
+    /** Actualiza el UI de los pasos */
+    function setStep(n) {
+      currentStep = n;
+
+      // Paneles
+      document.querySelectorAll(".panel").forEach((p, i) => {
+        p.classList.toggle("active", i + 1 === n);
+      });
+
+      // Steps bar
+      for (let i = 1; i <= 3; i++) {
+        const stepEl = document.getElementById(`step${i}`);
+        stepEl.classList.remove("active", "done");
+        if (i < n)  stepEl.classList.add("done");
+        if (i === n) stepEl.classList.add("active");
+      }
+
+      // Scroll al top
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ══════════════════════════════════════════
+    // MANEJO DE ARCHIVO DE COMPROBANTE
+    // ══════════════════════════════════════════
+
+    /** Se ejecuta cuando el usuario selecciona un archivo */
+    function handleFileSelect(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      // Validar tamaño (5MB máx)
+      if (file.size > 5 * 1024 * 1024) {
+        showToast("El archivo es demasiado grande. Máximo 5MB.", "error");
+        input.value = "";
+        return;
+      }
+
+      // Leer como base64
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        comprobanteBase64 = e.target.result;
+
+        // Mostrar preview si es imagen
+        const preview = document.getElementById("previewImg");
+        if (file.type.startsWith("image/")) {
+          preview.src = comprobanteBase64;
+          preview.classList.add("visible");
+        } else {
+          preview.classList.remove("visible");
+        }
+
+        // Actualizar zona de upload
+        document.querySelector(".upload-text").innerHTML =
+          `<strong style="color:var(--pink)">✓ ${file.name}</strong><br><span style="font-size:.8rem">Hacé clic para cambiar</span>`;
+
+        // Limpiar error
+        document.getElementById("err-comprobante").classList.remove("visible");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Drag & drop en la zona de upload
+    const uploadZone = document.getElementById("uploadZone");
+    uploadZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      uploadZone.classList.add("dragover");
+    });
+    uploadZone.addEventListener("dragleave", () => {
+      uploadZone.classList.remove("dragover");
+    });
+    uploadZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove("dragover");
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const input = document.getElementById("comprobanteFile");
+        // Crear un DataTransfer para asignar el file al input
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        handleFileSelect(input);
+      }
+    });
+
+    // ══════════════════════════════════════════
+    // VALIDACIÓN DEL FORMULARIO
+    // ══════════════════════════════════════════
+
+    function showFieldError(fieldId, errorId, show) {
+      const field = document.getElementById(fieldId);
+      const err   = document.getElementById(errorId);
+      if (field) field.classList.toggle("error", show);
+      if (err)   err.classList.toggle("visible", show);
+    }
+
+    function validateForm() {
+      let valid = true;
+
+      const nombre    = document.getElementById("nombre").value.trim();
+      const apellido  = document.getElementById("apellido").value.trim();
+      const dni       = document.getElementById("dni").value.replace(/\./g, "").trim();
+      const nombreTrf = document.getElementById("nombreTransferencia").value.trim();
+      const monto     = Number(document.getElementById("montoInput").value);
+
+      if (nombre.length < 2) {
+        showFieldError("nombre", "err-nombre", true);
+        valid = false;
+      } else { showFieldError("nombre", "err-nombre", false); }
+
+      if (apellido.length < 2) {
+        showFieldError("apellido", "err-apellido", true);
+        valid = false;
+      } else { showFieldError("apellido", "err-apellido", false); }
+
+      if (!/^\d{7,8}$/.test(dni)) {
+        showFieldError("dni", "err-dni", true);
+        valid = false;
+      } else { showFieldError("dni", "err-dni", false); }
+
+      if (nombreTrf.length < 2) {
+        showFieldError("nombreTransferencia", "err-nombreTransferencia", true);
+        valid = false;
+      } else { showFieldError("nombreTransferencia", "err-nombreTransferencia", false); }
+
+      if (!monto || monto <= 0) {
+        showFieldError("montoInput", "err-monto", true);
+        valid = false;
+      } else { showFieldError("montoInput", "err-monto", false); }
+
+      if (!comprobanteBase64) {
+        document.getElementById("err-comprobante").classList.add("visible");
+        document.getElementById("uploadZone").style.borderColor = "#ef4444";
+        valid = false;
+      } else {
+        document.getElementById("err-comprobante").classList.remove("visible");
+        document.getElementById("uploadZone").style.borderColor = "";
+      }
+
+      return valid;
+    }
+
+    // ══════════════════════════════════════════
+    // SUBMIT DEL FORMULARIO
+    // ══════════════════════════════════════════
+
+    async function submitForm(event) {
+      event.preventDefault();
+
+      if (!validateForm()) {
+        showToast("Completá todos los campos correctamente", "error");
+        // Scroll al primer error
+        const firstError = document.querySelector(".field-error.visible");
+        if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
+      // Deshabilitar botón y mostrar spinner
+      const btn = document.getElementById("submitBtn");
+      btn.disabled = true;
+      btn.innerHTML = `<div class="spinner-inline"></div> Enviando...`;
+
+      // Calcular total del pedido
+      const total = cart.reduce((a, i) => a + (Number(i.precio) * i.qty), 0);
+
+      // Armar el payload
+      const payload = {
+        nombre:              document.getElementById("nombre").value.trim(),
+        apellido:            document.getElementById("apellido").value.trim(),
+        dni:                 document.getElementById("dni").value.replace(/\./g, "").trim(),
+        nombreTransferencia: document.getElementById("nombreTransferencia").value.trim(),
+        monto:               Number(document.getElementById("montoInput").value),
+        comprobanteBase64,
+        pedido: {
+          items: cart.map(i => ({
+            nombre: i.nombre,
+            talle:  i.talle,
+            tela:   i.tela,
+            precio: Number(i.precio),
+            qty:    i.qty,
+          })),
+          total,
+        },
+      };
+
+      try {
+        const res = await fetch("/.netlify/functions/comprobantes", {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
+          body:    JSON.stringify(payload),
+        });
+
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+          // ¡Éxito!
+          localStorage.removeItem("sofymdn_cart"); // Limpiar carrito
+          document.getElementById("successPedidoId").textContent = result.pedidoId;
+          setStep(3);
+        } else {
+          throw new Error(result.error || "Error desconocido");
+        }
+
+      } catch (err) {
+        console.error("[submit] Error:", err);
+        showToast(err.message || "Error al enviar. Intentá de nuevo.", "error");
+        btn.disabled  = false;
+        btn.innerHTML = "Enviar comprobante y confirmar pedido";
+      }
+    }
+
+    // ══════════════════════════════════════════
+    // TOAST DE NOTIFICACIONES
+    // ══════════════════════════════════════════
+
+    let toastTimeout;
+    function showToast(msg, type = "error") {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className   = `toast ${type === "success" ? "success" : ""} show`;
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        t.classList.remove("show");
+      }, 4000);
+    }
+  </script>
+
+</body>
+</html>
