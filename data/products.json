@@ -1,5 +1,19 @@
 [
   {
+    "id": "prod_1775328457920_dd66",
+    "nombre": "ejemplo",
+    "tela": "Polar",
+    "talle": "L",
+    "precio": 20000,
+    "descripcion": "",
+    "tipo": "otro",
+    "imagenes": [
+      "https://api.telegram.org/file/bot8764216342:AAEIsS4gqL5yeEf4YBGSBqdNL14FTpVK8sk/photos/file_1.jpg"
+    ],
+    "activo": true,
+    "fechaAgregado": "2026-04-04T18:47:37.920Z"
+  },
+  {
     "id": "prod_1775328064800_rdbn",
     "nombre": "bihvvv",
     "tela": "Lycra",
