@@ -1,5 +1,27 @@
 [
   {
+    "id": "prod_1775407717700_e3bg",
+    "nombre": "kakaa",
+    "tela": "Cuerina",
+    "talles": [
+      "XL",
+      "XXL",
+      "S",
+      "M",
+      "L"
+    ],
+    "precio": 20000,
+    "descripcion": "",
+    "tipo": "otro",
+    "imagenes": [
+      "https://i.ibb.co/JRs109pm/0e34347f7ff5.jpg"
+    ],
+    "colores": [],
+    "enStock": true,
+    "activo": true,
+    "fechaAgregado": "2026-04-05T16:48:37.700Z"
+  },
+  {
     "id": "prod_1775404665435_w0xc",
     "nombre": "remera",
     "tela": "Algodón",
