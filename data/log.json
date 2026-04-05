@@ -1,5 +1,10 @@
 [
   {
+    "fecha": "2026-04-05T15:57:46.213Z",
+    "accion": "AGREGAR",
+    "detalle": "remera | $10.000 | Talles: M,XXL,XL"
+  },
+  {
     "fecha": "2026-04-05T15:56:35.052Z",
     "accion": "AGREGAR",
     "detalle": "remera | $10.000 | Talles: M"
