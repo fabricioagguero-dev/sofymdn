@@ -1,5 +1,27 @@
 [
   {
+    "id": "prod_1775404665435_w0xc",
+    "nombre": "remera",
+    "tela": "Algodón",
+    "talles": [
+      "M",
+      "XXL",
+      "XL"
+    ],
+    "precio": 10000,
+    "descripcion": "",
+    "tipo": "otro",
+    "imagenes": [
+      "https://api.telegram.org/file/bot8764216342:AAEIsS4gqL5yeEf4YBGSBqdNL14FTpVK8sk/photos/file_3.jpg"
+    ],
+    "colores": [
+      "Blanco"
+    ],
+    "enStock": true,
+    "activo": true,
+    "fechaAgregado": "2026-04-05T15:57:45.435Z"
+  },
+  {
     "id": "prod_1775404594387_khzv",
     "nombre": "remera",
     "tela": "Algodón",
